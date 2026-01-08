@@ -5,24 +5,23 @@ import Avatar from '@mui/material/Avatar';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { IconButton } from '@mui/material';
-
+import { Button } from '@mui/material';
 const SkillTable =() =>{
     const [rows, setRows]=useState([]);
+    const [selectedId , setSelectedId] = useState('');
+
     const [counters, setCounters] = useState({
         fire:0,
         water:0,
         thunder:0,
         wood:0,
     });
-    const handleAddRow =(selectedId) => {
+    const handleAddRow =() => {
         const selectedData = configData.find(item => item.id.toString()===selectedId);
         if(selectedData){
-            const newRow ={
-                ...selectedData,
-                id: rows.length+1
-            };
-            setRows([...rows,newRow]);
+            setRows([...rows,{id: rows.length+1,...selectedData}]);
         }
+        setSelectedId('');
     };
 
     const getSkillDiff = (skill) => {
@@ -55,43 +54,48 @@ const SkillTable =() =>{
     };
 
     const columns = [
-        {field: 'id', headerName: 'ID', width:60},
+        //{field: 'id', headerName: 'ID', width:60, },
         {field: 'avatar', 
-         headerName: '1', 
-         width:120, 
+         headerName: '', 
+         width:50, 
          renderCell: (params) => (
-            <Avatar alt={params.row.id} src={params.row.Avatar} variant="square"/>
-            ),
+            <Avatar alt={params.row.id} src={"https://jasoncwho.github.io/skill_calculator/images/"+params.row.id+"_m_i.png"} variant="square"/>
+            ), 
         },
-        {field: 'name', headerName: '名稱', width:150},
-        {field: 'level', headerName: '技能lv', type: 'number', width:80},
-        {field: 'skill', headerName: '波可', type: 'number', width:80},
+        {field: 'name', headerName: '名稱', width:145 , },
+        {field: 'skill', headerName: '波可', type: 'number', width:35,},
+        {field: 'level', headerName: '技能', type: 'number', width:35, },
         {
             field: 'actions',
             headerName: '',
-            width: 150,
+            width: 20,
             renderCell: (params) => (
-                <>
-                <IconButton
+                <div style={{display: 'flex' , flexDirection:'column',alignItems:'center'}}>
+                <Button
+                  style={{width: '20px'}}
                   onClick={() => handleLevelChange(params.row.id,'add')}
                   disabled={params.row.level >=10}
+                  size="small"
+                  startIcon={<AddIcon fontSize='small'/>}
                   >
-                    <AddIcon/>
-                </IconButton>
-                <IconButton
+                </Button>
+                
+                <Button
+                  style={{width: '20px'}}
                   onClick={() => handleLevelChange(params.row.id,'remove')}
                   disabled={params.row.level <=1}
-                  >
-                    <RemoveIcon/>
-                </IconButton>
-                </>
+                  size="small"
+                  startIcon={<RemoveIcon fontSize='small'/>}
+                  > </Button>
+                </div>
             )
-        }
+        },
+
         ];
 
     return (
         <div>
-            <select onChange={(e)=> handleAddRow(e.target.value)}
+            <select value={selectedId} onChange={(e)=> setSelectedId(e.target.value)}
                 style={{marginBottom: '10px'}}
                 >
                     <option value="">Select an ID</option>
@@ -101,6 +105,7 @@ const SkillTable =() =>{
                         </option> 
                     ))}
                 </select>
+                <button onClick={handleAddRow} disabled={!selectedId}>Add Row</button>
             <div>
             <DataGrid
                 rows={rows}
@@ -108,12 +113,16 @@ const SkillTable =() =>{
                 pageSize={5}
                 rowsPerPageOptions={[5]}
                 disableSelectionOnClick
+                disableColumnMenu
+                disableColumnFilter
+                disableColumnSorting
+                hideFooter
             /></div>
             <div>
-            <Avatar alt={"fire"} src={"/images/1640_m_i.png"} variant="square"/> {counters.fire}
-            <Avatar alt={"water"} src={"/images/1641_m_i.png"} variant="square"/> {counters.water}
-            <Avatar alt={"thunder"} src={"./images/1642_m_i.png"} variant="square"/> {counters.thunder}
-            <Avatar alt={"wood"} src={"./images/1643_m_i.png"} variant="square"/> {counters.wood}
+            <Avatar alt={"fire"} src={"https://jasoncwho.github.io/skill_calculator/images/1640_m_i.png"} variant="square"/> {counters.fire}
+            <Avatar alt={"water"} src={"https://jasoncwho.github.io/skill_calculator/images/1641_m_i.png"} variant="square"/> {counters.water}
+            <Avatar alt={"thunder"} src={"https://jasoncwho.github.io/skill_calculator/images/1642_m_i.png"} variant="square"/> {counters.thunder}
+            <Avatar alt={"wood"} src={"https://jasoncwho.github.io/skill_calculator/images/1643_m_i.png"} variant="square"/> {counters.wood}
             </div>
         </div>
        
